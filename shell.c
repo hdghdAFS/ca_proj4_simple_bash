@@ -24,12 +24,9 @@ main (int argc, char **argv)
 {
 	while (1){
 	int childPid;
-	char * cmdLine;
-
+	char cmdLine[10000];
 	printPrompt();
-
-	cmdLine= readCommandLine(); //or GNU readline("");
-
+	fgets(cmdLine,10000,stdin);
 	cmd = parseCommand(cmdLine);
 
 	record command in history list (GNU readline history ?)
