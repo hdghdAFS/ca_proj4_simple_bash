@@ -27,6 +27,8 @@ main (int argc, char **argv)
 	char cmdLine[10000];
 	printPrompt();
 	fgets(cmdLine,10000,stdin);
+
+	
 	cmd = parseCommand(cmdLine);
 
 	record command in history list (GNU readline history ?)
