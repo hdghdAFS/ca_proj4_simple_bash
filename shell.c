@@ -25,6 +25,7 @@ main (int argc, char **argv)
 	while (1){
 	int childPid;
 	char cmdLine[10000];
+	struct command cmd;
 	printPrompt();
 	fgets(cmdLine,10000,stdin);
 
