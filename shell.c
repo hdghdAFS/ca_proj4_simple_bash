@@ -4,11 +4,12 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include <string.h>
+#include <stdlib.h>
+
 void printPrompt(){
 	char hostname[1000];
 	char buf[1000];
 	char *dir,*t;
-	char *b="~";
 	struct passwd *info;  
 	info=getpwuid(getuid()); 
 	getcwd(buf, 1000); 
@@ -31,8 +32,8 @@ main (int argc, char **argv)
 
 	
 	cmd = parseCommand(cmdLine);
-
-	record command in history list (GNU readline history ?)
+	childPid = 1;
+/*	record command in history list (GNU readline history ?)
 
 	if ( isBuiltInCommand(cmd)){
 		executeBuiltInCommand(cmd);
@@ -48,6 +49,6 @@ main (int argc, char **argv)
 				waitpid (childPid);
 
 			}		
-		}
+		}*/
 	}
 }
