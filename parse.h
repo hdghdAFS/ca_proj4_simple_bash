@@ -1,11 +1,25 @@
 #include <stdbool.h>
 struct command{
-	int cmd_num;
-	char ** command;
+	int pipe_num;
+	char * command;
 	char *infile_name;
 	char *outfile_name;
 	bool isBackgroundJob;
-
+	bool isBuiltInCommand;
+	bool append;
 };
-struct command parseCommand(char *cmdLine);
+struct jobs
+{
+	int pid;
+	int i; //i is the max num  in head
+	char* command;
+	struct jobs* next;
+	char run[1];
+};
+struct command* parseCommand(char *cmdLine);
+
+
+struct jobs insert(struct jobs head,int p,struct command* cmd);
+
+int find_pid(struct jobs head,int num);
 #include "parse.c" 

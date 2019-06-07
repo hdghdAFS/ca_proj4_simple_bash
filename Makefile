@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g  -Wall 
+CFLAGS = -g 
 
 
 all: parse.c parse.h shell.c
