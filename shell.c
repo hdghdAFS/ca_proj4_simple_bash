@@ -92,17 +92,17 @@ void executeCommand(struct command* cmd){
 			argument = malloc(sizeof(char)*(strlen(t)+1));
 			strcpy(argument,t);
 		}
-		/*if (cmd->infile_name != NULL){
+		if (cmd->infile_name != NULL){
 			fi = open(cmd->infile_name,O_RDONLY);
 			t1=dup(STDIN_FILENO);
 			dup2(fi,STDIN_FILENO);
 
 		}
-		*/if (cmd->outfile_name != NULL)
+		if (cmd->outfile_name != NULL)
 		{
 
 			if (cmd->append){
-				fo = open(cmd->outfile_name,O_WRONLY|O_APPEND);
+				fo = open(cmd->outfile_name,O_WRONLY|O_APPEND| O_CREAT,0644);
 			}
 			else{
 				fo = open(cmd->outfile_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -117,13 +117,13 @@ void executeCommand(struct command* cmd){
 
 		excute(command,argument,cmd);
 
-		/*if (cmd->infile_name != NULL){
+		if (cmd->infile_name != NULL){
 			
 			dup2(t1,STDIN_FILENO);
 			close(fi);
 			close(t1);
 			free(cmd->infile_name);
-		}*/	
+		}
 		if (cmd->outfile_name != NULL)
 		{
 			
@@ -187,7 +187,7 @@ void executeCommand(struct command* cmd){
 					{
 
 						if (cmd->append){
-							fo = open(cmd->outfile_name,O_WRONLY|O_APPEND);
+							fo = open(cmd->outfile_name,O_WRONLY|O_APPEND| O_CREAT,0644);
 						}
 						else{
 							fo = open(cmd->outfile_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
