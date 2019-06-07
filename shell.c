@@ -5,7 +5,6 @@
 #include <pwd.h>
 #include <string.h>
 #include <stdlib.h>
-#include <readline/readline.h>
 #include <sys/types.h> 
 #include <sys/wait.h>
 #include <fcntl.h>                   
