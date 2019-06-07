@@ -1,8 +1,15 @@
+
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include <string.h>
 #include <stdlib.h>
-
-
+#include <sys/types.h> 
+#include <sys/wait.h>
+#include <fcntl.h>                   
+#include <sys/types.h>                       
+#include <sys/stat.h>  
 struct command* parseCommand(char *cmdLine)
 {
   char *t;
@@ -16,7 +23,7 @@ struct command* parseCommand(char *cmdLine)
   int j = 0; //num of pipe
   char **command = malloc(sizeof(char *) * 10000);
   t = strtok(cmdLine, " \n");
-  if ((strcmp(t,"cd") == 0) || (strcmp(t,"kill") == 0) || (strcmp(t,"kill") == 0) ||  (strcmp(t,"exit") == 0)) {
+  if ((strcmp(t,"cd") == 0) || (strcmp(t,"kill") == 0) || (strcmp(t,"jobs") == 0) ||  (strcmp(t,"exit") == 0)) {
   	cmd->isBuiltInCommand = true;
   }
   else{
@@ -86,27 +93,57 @@ struct command* parseCommand(char *cmdLine)
 
 
 struct jobs insert(struct jobs head,int pid,struct command* cmd){
-	struct jobs* j = malloc(sizeof(struct jobs));
-	struct jobs* p= &head;
+  struct jobs* j = malloc(sizeof(struct jobs));
 
-	while (p->next != NULL) {
-		p=p->next;
-	}
-	p->next=j;
-	j->next=NULL;
-	j->i= (head.i)+1;
-	j->pid = pid;
-	j->command =cmd->command;
-
-	return head; 
+  struct jobs* p= &head;
+  head.i=0;
+  while (p->next != NULL) {
+    p=p->next;
+    head.i=p->i;
+    strcpy(p->c," ");
+  }
+  p->next=j;
+  strcpy(p->c,"-");
+  j->next=NULL;
+  j->i= (head.i)+1;
+  head.i=j->i;
+  j->pid = pid;
+  j->command =cmd->command;
+  strcpy(j->c,"+");
+  return head; 
 }
 
 
 int find_pid(struct jobs head,int num){
-	struct jobs* p= &head;
-	p=p->next;
-	while(p->i != num){
-		p=p->next;
-	}
-	return p->pid;
+  struct jobs* p= &head;
+  p=p->next;
+  while(p->i != num){
+    p=p->next;
+  }
+  return p->pid;
 }
+
+struct jobs print_jobs(struct jobs head){
+  struct jobs* p= &head;
+  struct jobs* t;
+  int status;
+  while (p->next != NULL){
+    t=p->next;
+    if (waitpid(t->pid,&status,WNOHANG) == 0){
+        printf("[%d]%s  Running                 %s &\n",t->i,t->c,t->command);
+        p=p->next;
+    }
+    else{
+      if (WIFEXITED(status)){
+        printf("[%d]%s  Done                    %s \n",t->i,t->c,t->command);  
+      }
+      else if(WIFSIGNALED(status)==15){
+        printf("[%d]%s  Terminated              %s \n",t->i,t->c,t->command);
+      }
+      p->next=p->next->next;
+      free(t->command);
+      free(t);
+    }
+  }
+  return head;
+} 

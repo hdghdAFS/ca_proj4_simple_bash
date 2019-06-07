@@ -15,6 +15,7 @@ struct jobs executeBuiltInCommand(struct command* cmd,struct jobs head){
 	char *command=NULL;
 	char *argument=NULL;
 	char e_command[1000];
+	int fo,t2;
 	strcpy(e_command,cmd->command);
 	t = strtok(e_command," ");
 	command =malloc(sizeof(char)*(strlen(t)+1));
@@ -35,7 +36,7 @@ struct jobs executeBuiltInCommand(struct command* cmd,struct jobs head){
 		}
 		else chdir(argument);
 	}
-	else if (strcmp(command,"exit") == 0){
+	else if ((strcmp(command,"exit") == 0) || (strcmp(command,"exits") == 0)){
 		if (argument == NULL) exit(0);
 		else exit (atoi(argument));
 	}
@@ -46,6 +47,33 @@ struct jobs executeBuiltInCommand(struct command* cmd,struct jobs head){
 		}
 		else{
 			kill(find_pid(head,atoi(t)),15);
+		}
+	}
+	else if (strcmp(command,"jobs") == 0){
+		if (cmd->outfile_name != NULL)
+		{
+
+			if (cmd->append){
+				fo = open(cmd->outfile_name,O_WRONLY|O_APPEND| O_CREAT,0644);
+			}
+			else{
+				fo = open(cmd->outfile_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+			}
+			t2=dup(STDOUT_FILENO);
+			dup2(fo,STDOUT_FILENO);
+			
+			
+		}
+
+		head=print_jobs(head);
+		if (cmd->outfile_name != NULL)
+		{
+			
+			dup2(t2,STDOUT_FILENO);
+			close(fo);
+			close(t2);
+			free(cmd->outfile_name);			
 		}
 	}
 	free(command);
@@ -241,16 +269,16 @@ main (int argc, char **argv)
 	struct jobs head;
 	head.i=0;
 	head.next=NULL;
+	strcpy(head.c," ");
 	while (1){
 	//printf("a\n");
 	int childPid,fatherpid;
-
+	strcpy(cmdLine,"");
 	struct command *cmd;
 	/*printPrompt();*/
 	
 	if (fgets(cmdLine,1000,fi) == NULL) break;
 	cmd = parseCommand(cmdLine);
-	//printf("%s\n",cmd->command);
 	if ( cmd->isBuiltInCommand){
 		head=executeBuiltInCommand(cmd,head);
 	} else {	

@@ -14,10 +14,10 @@ struct jobs
 	int i; //i is the max num  in head
 	char* command;
 	struct jobs* next;
-	char run[1];
+	char c[1];
 };
 struct command* parseCommand(char *cmdLine);
-
+struct jobs print_jobs(struct jobs head);
 
 struct jobs insert(struct jobs head,int p,struct command* cmd);
 
