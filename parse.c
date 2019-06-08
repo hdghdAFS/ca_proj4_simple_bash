@@ -145,10 +145,10 @@ struct jobs print_jobs(struct jobs head){
     }
     else{
       if (WIFEXITED(status)){
-        printf("[%d]%s  Done                    %s \n",t->i,t->c,t->command);  
+        printf("[%d]%s  Done                    %s\n",t->i,t->c,t->command);  
       }
       else if(WIFSIGNALED(status)==15){
-        printf("[%d]%s  Terminated              %s \n",t->i,t->c,t->command);
+        printf("[%d]%s  Terminated              %s\n",t->i,t->c,t->command);
       }
       p->next=p->next->next;
       free(t->command);
