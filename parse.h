@@ -15,6 +15,7 @@ struct jobs
 	char* command;
 	struct jobs* next;
 	char c[1];
+	int num_jobs;
 };
 struct command* parseCommand(char *cmdLine);
 struct jobs print_jobs(struct jobs head);

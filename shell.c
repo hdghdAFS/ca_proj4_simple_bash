@@ -48,6 +48,7 @@ struct jobs executeBuiltInCommand(struct command* cmd,struct jobs head){
 		else{
 			kill(find_pid(head,atoi(t)),15);
 		}
+		head.num_jobs -= 1;
 	}
 	else if (strcmp(command,"jobs") == 0){
 		if (cmd->outfile_name != NULL)
@@ -269,6 +270,7 @@ main (int argc, char **argv)
 	struct jobs head;
 	head.i=0;
 	head.next=NULL;
+	head.num_jobs=0;
 	strcpy(head.c," ");
 	while (1){
 	//printf("a\n");

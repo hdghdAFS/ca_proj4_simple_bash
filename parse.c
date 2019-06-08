@@ -100,16 +100,17 @@ struct jobs insert(struct jobs head,int pid,struct command* cmd){
   while (p->next != NULL) {
     p=p->next;
     head.i=p->i;
-    strcpy(p->c," ");
+
   }
   p->next=j;
-  strcpy(p->c,"-");
+
   j->next=NULL;
   j->i= (head.i)+1;
   head.i=j->i;
+  head.num_jobs += 1;
   j->pid = pid;
   j->command =cmd->command;
-  strcpy(j->c,"+");
+  strcpy(j->c," ");
   return head; 
 }
 
@@ -127,8 +128,17 @@ struct jobs print_jobs(struct jobs head){
   struct jobs* p= &head;
   struct jobs* t;
   int status;
+  int count = 1;
+  int a=0;
   while (p->next != NULL){
     t=p->next;
+    if (count == (head.num_jobs)){
+      strcpy(t->c,"+");
+    }
+    else if (count == (head.num_jobs-1))
+    {
+      strcpy(t->c,"-");
+    }
     if (waitpid(t->pid,&status,WNOHANG) == 0){
         printf("[%d]%s  Running                 %s &\n",t->i,t->c,t->command);
         p=p->next;
@@ -143,7 +153,11 @@ struct jobs print_jobs(struct jobs head){
       p->next=p->next->next;
       free(t->command);
       free(t);
+      a++;
     }
+    count++;
+    strcpy(t->c," ");
   }
+  head.num_jobs = head.num_jobs - a;
   return head;
 } 
